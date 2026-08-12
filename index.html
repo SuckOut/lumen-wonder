@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumen Wonder — Find Trusted Catholic Resources</title>
+  <meta name="description" content="Lumen Wonder helps Catholics, families, catechists, and travelers quickly find trusted Catholic resources, places, and practical guidance.">
+  <meta property="og:title" content="Lumen Wonder — Find Trusted Catholic Resources">
+  <meta property="og:description" content="A curated Catholic resource directory and search engine. Mass times, CCD, pilgrimages, podcasts, and trusted sites.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="home">
+  <div data-site-header></div>
+
+  <main>
+    <!-- Hero + search -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <span class="hero__eyebrow">Catholic search &amp; discovery</span>
+        <h1>Find trusted Catholic resources — easily.</h1>
+        <p class="hero__sub">
+          A curated directory for families, catechists, and travelers.
+          Search Mass times, CCD materials, shrines, podcasts, and solid Catholic sites.
+        </p>
+        <div class="hero__search" data-mount-search></div>
+        <div class="hero__hints" aria-label="Popular searches">
+          <button type="button" class="hint-chip" data-hint="Mass times">Mass times</button>
+          <button type="button" class="hint-chip" data-hint="CCD free">Free CCD</button>
+          <button type="button" class="hint-chip" data-hint="Confession">Confession</button>
+          <button type="button" class="hint-chip" data-hint="pilgrimage">Pilgrimages</button>
+          <button type="button" class="hint-chip" data-hint="Catechism">Catechism</button>
+          <button type="button" class="hint-chip" data-hint="podcast">Podcasts</button>
+        </div>
+        <div style="margin-top: 0.5rem;">
+          <a class="btn btn--secondary" href="find-mass.html">Find Mass near you</a>
+        </div>
+        <!-- Featured Family — directly under Find Mass, above the fold -->
+        <div class="hero__family" id="featured-family" data-mount-featured-family></div>
+      </div>
+    </section>
+
+    <!-- Categories — primary navigation -->
+    <section class="section" id="categories">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Browse by category</h2>
+            <p>Start here. Clear paths for the things Catholics look for most often.</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <a class="btn btn--secondary" href="directory.html">View all resources</a>
+            <a class="btn btn--ghost" href="suggest.html">Suggest a resource</a>
+          </div>
+        </div>
+        <div data-mount-categories></div>
+      </div>
+    </section>
+
+    <!-- Top Catholic YouTube Channels -->
+    <section class="section section--panel" id="youtube">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Top Catholic YouTube Channels</h2>
+            <p>
+              Solid, fully Catholic channels faithful to Church teaching —
+              for formation, news, prayer, and everyday questions.
+            </p>
+          </div>
+        </div>
+        <div data-mount-youtube></div>
+      </div>
+    </section>
+
+    <!-- Featured resources -->
+    <section class="section section--tight" id="featured">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Featured resources</h2>
+            <p>A starting set of well-known, carefully labeled sources.</p>
+          </div>
+          <a class="btn btn--ghost" href="directory.html">See the full directory →</a>
+        </div>
+        <div data-mount-featured></div>
+      </div>
+    </section>
+
+    <!-- Trust + scope -->
+    <section class="section">
+      <div class="container" style="display: grid; gap: 1.25rem;">
+        <div data-mount-disclaimer></div>
+        <div class="callout">
+          <div>
+            <h3>How trust labels work</h3>
+            <p>
+              Every resource is labeled — Official Church, Diocesan, Apostolate, and more —
+              so you know who stands behind it before you click.
+            </p>
+          </div>
+          <a class="btn btn--primary" href="about.html#trust">Learn about trust labels</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

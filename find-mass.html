@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Mass Near You — Lumen Wonder</title>
+  <meta name="description" content="Find Catholic Mass, Confession, and Adoration near you. Location-aware links to trusted Mass finders plus dioceses and shrines in our directory.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="find-mass">
+  <div data-site-header></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Find Mass near you</h1>
+        <p>
+          Enter a city or ZIP, or use your location. We’ll open trusted Mass-finder tools
+          and match dioceses and places in the Lumen Wonder directory.
+        </p>
+        <div style="margin-top: 1.25rem;" data-mount-location-panel></div>
+        <div class="hero__hints" style="justify-content: flex-start; margin-top: 1rem;" aria-label="Popular places">
+          <button type="button" class="hint-chip" data-place-hint="New York, NY">New York</button>
+          <button type="button" class="hint-chip" data-place-hint="Los Angeles, CA">Los Angeles</button>
+          <button type="button" class="hint-chip" data-place-hint="Chicago, IL">Chicago</button>
+          <button type="button" class="hint-chip" data-place-hint="Houston, TX">Houston</button>
+          <button type="button" class="hint-chip" data-place-hint="Miami, FL">Miami</button>
+          <button type="button" class="hint-chip" data-place-hint="Washington, DC">Washington, DC</button>
+          <button type="button" class="hint-chip" data-place-hint="Toronto, ON">Toronto</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container" style="display: grid; gap: 2rem;">
+        <div data-mount-matched-regions></div>
+        <div data-mount-finders></div>
+        <div data-mount-local></div>
+
+        <aside class="disclaimer">
+          <h3>Please verify times</h3>
+          <p>
+            Schedules change. Always confirm Mass, Confession, and Adoration times on the
+            <strong>parish or diocese website</strong> (or by phone) before you go.
+            Lumen Wonder does not maintain live parish calendars.
+          </p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/location.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

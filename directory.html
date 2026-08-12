@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resource Directory — Lumen Wonder</title>
+  <meta name="description" content="Browse and search the Lumen Wonder directory of trusted Catholic resources — websites, podcasts, CCD, Mass finders, shrines, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="directory">
+  <div data-site-header></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1 data-page-title>Resource directory</h1>
+        <p data-page-sub>Browse trusted Catholic resources. Filter by category or trust label.</p>
+        <div style="margin-top: 1.25rem; max-width: 640px;" data-mount-search></div>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="callout" data-mass-cta hidden style="margin-bottom: 1.25rem;">
+          <div>
+            <h3>Looking for Mass near you?</h3>
+            <p>Use the location tool for city/ZIP search, device location, and Mass-finder links.</p>
+          </div>
+          <a class="btn btn--primary" href="find-mass.html">Open Find Mass</a>
+        </div>
+        <div data-mount-filters></div>
+        <div class="results-meta" data-mount-meta></div>
+        <div data-mount-results></div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

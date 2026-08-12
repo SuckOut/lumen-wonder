@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suggest a Resource — Lumen Wonder</title>
+  <meta name="description" content="Suggest a trusted Catholic website, diocese, shrine, podcast, or CCD resource for the Lumen Wonder directory.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="suggest">
+  <div data-site-header></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Suggest a resource</h1>
+        <p>
+          Know a solid Catholic site, diocese, shrine, podcast, or CCD tool we should list?
+          Submit it for review. Nothing is published automatically.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container" style="display: grid; gap: 2rem; max-width: 720px;">
+        <div class="disclaimer">
+          <h3>What makes a good suggestion</h3>
+          <ul>
+            <li>Clear Catholic identity and a stable URL</li>
+            <li>Useful for families, catechists, travelers, or formation</li>
+            <li>Honest trust label (prefer Official Church / Diocesan when applicable)</li>
+            <li>Short, careful description — no sales pitch</li>
+          </ul>
+        </div>
+
+        <div data-mount-suggest-form></div>
+        <div data-mount-suggest-result hidden></div>
+
+        <div>
+          <h2 style="font-size: 1.15rem;">Pending on this device</h2>
+          <p class="text-muted" style="margin-bottom: 0.75rem;">
+            Suggestions are saved in your browser’s local storage so you can copy JSON into <code>js/data.js</code>.
+          </p>
+          <div data-mount-pending></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/suggest.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
