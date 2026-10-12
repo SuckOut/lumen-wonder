@@ -49,6 +49,7 @@ window.LumenComponents = (function () {
     const links = [
       { href: "index.html", id: "home", label: "Home" },
       { href: "find-mass.html", id: "find-mass", label: "Find Mass" },
+      { href: "this-week.html", id: "this-week", label: "This Week" },
       { href: "free-ccd.html", id: "free-ccd", label: "Free CCD" },
       { href: "directory.html", id: "directory", label: "Directory" },
       { href: "suggest.html", id: "suggest", label: "Suggest" },

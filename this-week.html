@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>This Week Where You Live — Lumen Wonder</title>
+  <meta name="description" content="Your Catholic week by location: feasts, holy days of obligation, Friday abstinence, and novenas starting soon.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+<style>
+.tw{--bg:#fbf7f0;--card:#fff;--ink:#2b2420;--mute:#7a6d63;--gold:#b8862b;--red:#9b2c2c;--green:#3f6b4a;--violet:#5b3f7a;--line:#ece3d6}
+.tw *{box-sizing:border-box}
+.tw{margin:0;font:16px/1.5 Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink)}
+.tw .tw-hero{background:linear-gradient(135deg,#3b2a1e,#6b4a2b);color:#fff8ea;padding:22px 20px 26px;text-align:center}
+.tw .tw-hero .brand{font:600 13px/1 system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#e9c97d}
+.tw .tw-hero h1{margin:8px 0 4px;font-size:clamp(26px,5vw,38px);font-weight:normal}
+.tw .tw-hero p{margin:0;opacity:.85;font-size:15px}
+.tw .wrap{max-width:980px;margin:0 auto;padding:16px}
+.tw .loc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:-18px;box-shadow:0 4px 14px #0000000d;font-family:system-ui,sans-serif;font-size:14px}
+.tw .loc select,.tw .loc button,.tw .loc input{font:inherit;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:#fff}
+.tw .loc button{background:var(--gold);color:#fff;border:0;cursor:pointer}
+.tw .loc .where{flex-basis:100%;color:var(--mute)}
+.tw .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:760px){.tw .grid{grid-template-columns:1fr}}
+.tw .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tw .card h2{margin:0 0 10px;font-size:19px;font-weight:normal;color:var(--gold)}
+.tw .day{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.tw .day:first-of-type{border-top:0}
+.tw .day.today{background:#fff6e2;margin:0 -16px;padding:10px 16px}
+.tw .date{min-width:52px;text-align:center;font-family:system-ui,sans-serif}
+.tw .date b{display:block;font-size:22px}
+.tw .date small{color:var(--mute);text-transform:uppercase;font-size:11px;letter-spacing:.08em}
+.tw .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+.tw .tags{margin-top:4px}
+.tw .tag{display:inline-block;font:600 11px/1 system-ui,sans-serif;padding:5px 8px;border-radius:20px;margin:2px 4px 0 0}
+.tw .t-hdo{background:var(--red);color:#fff}
+.tw .t-lift{background:#f1e4e4;color:var(--red)}
+.tw .t-abs{background:#eef1ec;color:var(--green)}
+.tw .t-fast{background:#ede6f3;color:var(--violet)}
+.tw .t-unc{background:#fff2c9;color:#7a5b00}
+.tw .nov{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.tw .nov:first-of-type{border-top:0}
+.tw .cd{font:700 13px system-ui,sans-serif;color:var(--gold);white-space:nowrap}
+.tw .hdo-big{font-size:28px;margin:4px 0}
+.tw .share{width:100%;padding:12px;border:0;border-radius:10px;background:#3b2a1e;color:#fff;font:600 15px system-ui,sans-serif;cursor:pointer;margin-top:8px}
+.tw .sub input{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;font:inherit;margin:8px 0}
+.tw .sub button{width:100%;padding:11px;border:0;border-radius:9px;background:var(--gold);color:#fff;font:600 15px system-ui,sans-serif}
+.tw .muted{color:var(--mute);font-size:13px;font-family:system-ui,sans-serif}
+.tw .tw-foot{text-align:center;padding:24px;color:var(--mute);font:13px system-ui,sans-serif}
+.tw .side>.card{margin-bottom:16px}
+.tw{background:transparent}
+.tw .tw-hero h1,.tw .tw-hero p{color:#fff8ea !important}
+</style>
+</head>
+<body data-page="this-week">
+  <div data-site-header></div>
+  <main class="tw">
+
+<section class="tw-hero"><div class="brand">Lumen Wonder</div><h1>This Week Where You Live</h1><p id="range"></p></section>
+<div class="wrap">
+ <div class="loc">📍 <select id="state"></select><input id="zip" placeholder="ZIP" size="6" inputmode="numeric"><button id="geo">Use my location</button>
+ <div class="where" id="where"></div></div>
+ <div class="grid">
+  <div class="card"><h2>Your Catholic week</h2><div id="week"></div>
+   <p class="muted">Colors = liturgical color. <span class="tag t-unc">check</span> = mockup data to verify against the USCCB Ordo before launch.</p></div>
+  <div class="side">
+   <div class="card"><h2>Holy day of obligation?</h2><div id="hdo"></div></div>
+   <div class="card"><h2>Novenas starting soon</h2><div id="nov"></div></div>
+   <div class="card"><h2>Share this week</h2><p class="muted">Send your parish group the week at a glance.</p><button class="share" id="share">Share ↗</button></div>
+   <div class="card sub"><h2>Your Catholic Week ✉️</h2><p class="muted">Every Saturday: next week's feasts, obligations and novenas for your diocese.</p><input placeholder="you@email.com"><button type="button" onclick="alert('Mockup only, signup not connected.')">Subscribe free</button></div>
+  </div>
+ </div>
+</div>
+<p class="tw-foot">Preview · Lumen Wonder · Data covers Oct 2026 – Jan 2027</p>
+
+  </main>
+  <div data-site-footer></div>
+  <script src="js/data.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/location.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+// Provinces that KEEP Ascension on Thursday (all other US provinces transfer to Sunday)
+const THU_ASC=["Boston","Hartford","New York","Newark","Philadelphia","Omaha"];
+const ST={NJ:["Newark","Archdiocese of Newark (Province of Newark)"],NY:["New York","Archdiocese of New York (Province of New York)"],PA:["Philadelphia","Archdiocese of Philadelphia"],MA:["Boston","Archdiocese of Boston"],CT:["Hartford","Archdiocese of Hartford"],NE:["Omaha","Archdiocese of Omaha"],CA:["Los Angeles","Archdiocese of Los Angeles"],TX:["San Antonio","Archdiocese of San Antonio / Galveston-Houston"],FL:["Miami","Archdiocese of Miami"],IL:["Chicago","Archdiocese of Chicago"],HI:["San Francisco","Diocese of Honolulu (Province of San Francisco)"],OH:["Cincinnati","Archdiocese of Cincinnati"],WA:["Seattle","Archdiocese of Seattle"]};
+const ZIP={"07":"NJ","08":"NJ","10":"NY","11":"NY","19":"PA","02":"MA","06":"CT","68":"NE","90":"CA","77":"TX","33":"FL","60":"IL","96":"HI","45":"OH","98":"WA"};
+// color: w white, r red, g green, v violet
+const F={"2026-10-11":["28th Sunday in Ordinary Time","g"],"2026-10-13":["Tuesday, 28th Week in Ordinary Time","g"],"2026-10-12":["Monday, 28th Week in Ordinary Time","g"],"2026-10-14":["St. Callistus I, Pope & Martyr (opt.)","r"],"2026-10-15":["St. Teresa of Jesus (Ávila), Doctor","w"],"2026-10-16":["St. Hedwig / St. Margaret Mary Alacoque (opt.)","w"],"2026-10-17":["St. Ignatius of Antioch, Bishop & Martyr","r"],"2026-10-18":["29th Sunday in Ordinary Time","g"],"2026-10-19":["Sts. John de Brébeuf, Isaac Jogues & Companions","r"],"2026-10-20":["St. Paul of the Cross (opt.)","w"],"2026-10-22":["St. John Paul II (opt.)","w"],"2026-10-23":["St. John of Capistrano (opt.)","w"],"2026-10-24":["St. Anthony Mary Claret (opt.)","w"],"2026-10-25":["30th Sunday in Ordinary Time","g"],"2026-10-28":["Sts. Simon & Jude, Apostles","r"],"2026-11-01":["ALL SAINTS (Solemnity, on Sunday)","w"],"2026-11-02":["All Souls (Commemoration of All the Faithful Departed)","v"],"2026-11-03":["St. Martin de Porres (opt.)","w"],"2026-11-04":["St. Charles Borromeo","w"],"2026-11-08":["32nd Sunday in Ordinary Time","g"],"2026-11-09":["Dedication of the Lateran Basilica","w"],"2026-11-10":["St. Leo the Great","w"],"2026-11-11":["St. Martin of Tours","w"],"2026-11-12":["St. Josaphat","r"],"2026-11-13":["St. Frances Xavier Cabrini","w"],"2026-11-15":["33rd Sunday in Ordinary Time","g"],"2026-11-17":["St. Elizabeth of Hungary","w"],"2026-11-21":["Presentation of the Blessed Virgin Mary","w"],"2026-11-22":["OUR LORD JESUS CHRIST, KING OF THE UNIVERSE","w"],"2026-11-26":["Thanksgiving Day (US, Mass for Thanksgiving)","w"],"2026-11-29":["1st Sunday of Advent","v"],"2026-11-30":["St. Andrew, Apostle","r"],"2026-12-03":["St. Francis Xavier","w"],"2026-12-06":["2nd Sunday of Advent","v"],"2026-12-07":["St. Ambrose","w"],"2026-12-08":["IMMACULATE CONCEPTION (Patronal feast of the USA)","w"],"2026-12-09":["St. Juan Diego (opt.)","w"],"2026-12-12":["Our Lady of Guadalupe (Feast)","w"],"2026-12-13":["3rd Sunday of Advent (Gaudete)","v"],"2026-12-14":["St. John of the Cross","w"],"2026-12-20":["4th Sunday of Advent","v"],"2026-12-25":["THE NATIVITY OF THE LORD (Christmas)","w"],"2026-12-26":["St. Stephen, First Martyr","r"],"2026-12-27":["The Holy Family","w"],"2026-12-28":["Holy Innocents","r"],"2027-01-01":["MARY, HOLY MOTHER OF GOD","w"],"2027-01-03":["The Epiphany of the Lord (US: Sunday)","w"]};
+const HDO={"2026-11-01":"All Saints falls on Sunday this year, so the obligation is met by Sunday Mass.","2026-12-08":"Immaculate Conception (Tue): obligation applies everywhere in the US.","2026-12-25":"Christmas (Fri): obligation.","2027-01-01":"Mary, Mother of God (Fri): obligation."};
+const NOTE={"2026-11-02":"Not a holy day of obligation, but a beautiful day to attend Mass for the dead."};
+const NOV=[["St. Jude","2026-10-19","Feast Oct 28"],["All Souls (Holy Souls)","2026-10-24","Ends Nov 1"],["Christ the King","2026-11-13","Feast Nov 22"],["Immaculate Conception","2026-11-29","Feast Dec 8"],["St. Andrew Christmas Novena","2026-11-30","Prayed 15× daily until Dec 24"],["Our Lady of Guadalupe","2026-12-03","Feast Dec 12"],["Christmas Novena","2026-12-16","Ends Dec 24"],["Mary, Mother of God","2026-12-23","Feast Jan 1"]];
+const C={w:"#d9c27a",r:"#b23a3a",g:"#4b7d57",v:"#6b4a8f"};
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmt=(d,o)=>d.toLocaleDateString("en-US",o);
+const sel=document.getElementById("state");
+Object.keys(ST).sort().forEach(k=>sel.add(new Option(k+" · "+ST[k][1],k)));
+sel.value=localStorage.lwState||"NJ";
+function render(){
+ const s=sel.value,[prov,dio]=ST[s];localStorage.lwState=s;
+ const asc=THU_ASC.includes(prov)?"Ascension is kept on <b>Thursday, May 6, 2027</b> (holy day of obligation) in your province.":"Ascension moves to <b>Sunday, May 9, 2027</b> in your province.";
+ document.getElementById("where").innerHTML="Showing <b>"+dio+"</b>. "+asc;
+ const t=new Date();t.setHours(0,0,0,0);const st=new Date(t);st.setDate(t.getDate()-t.getDay());
+ const en=new Date(st);en.setDate(st.getDate()+6);
+ document.getElementById("range").textContent=fmt(st,{month:"long",day:"numeric"})+" – "+fmt(en,{month:"long",day:"numeric",year:"numeric"});
+ let h="",hdoWeek=[];
+ for(let i=0;i<7;i++){const d=new Date(st);d.setDate(st.getDate()+i);const k=iso(d);
+  const f=F[k]||[d.getDay()==0?"Sunday — Lord's Day":"Weekday","g"];const tags=[];
+  const solemn=/^[A-Z ,.()]{8}/.test(f[0]);
+  if(HDO[k]){tags.push('<span class="tag t-hdo">Holy day of obligation</span>');hdoWeek.push([d,HDO[k]])}
+  if(NOTE[k])tags.push('<span class="tag t-lift">Not obligatory</span>');
+  if(d.getDay()==5&&!solemn)tags.push('<span class="tag t-abs">Friday penance · abstain from meat or another penance</span>');
+  if(d.getDay()==5&&solemn)tags.push('<span class="tag t-lift">Solemnity: no Friday abstinence</span>');
+  if(!F[k])tags.push('<span class="tag t-unc">check</span>');
+  h+=`<div class="day ${+d==+t?"today":""}"><div class="date"><small>${fmt(d,{weekday:"short"})}</small><b>${d.getDate()}</b><small>${fmt(d,{month:"short"})}</small></div><div><span class="dot" style="background:${C[f[1]]}"></span>${f[0]}${NOTE[k]?'<div class="muted">'+NOTE[k]+"</div>":""}<div class="tags">${tags.join("")}</div></div></div>`}
+ document.getElementById("week").innerHTML=h;
+ const nx=Object.keys(HDO).find(k=>new Date(k+"T00:00")>=t);
+ const nd=new Date(nx+"T00:00"),days=Math.round((nd-t)/864e5);
+ document.getElementById("hdo").innerHTML=(hdoWeek.length?'<div class="hdo-big">✅ Yes, this week</div><p>'+hdoWeek.map(x=>x[1]).join("<br>")+"</p>":'<div class="hdo-big">No, not this week</div>')+`<p class="muted">Next: <b>${fmt(nd,{weekday:"long",month:"short",day:"numeric"})}</b>, in ${days} days. ${HDO[nx]}</p><p class="muted">US rule: when Jan 1, Aug 15 or Nov 1 falls on a Saturday or Monday, the obligation is lifted. Next fast days: Ash Wednesday Feb 10, 2027 and Good Friday Mar 26, 2027.</p>`;
+ document.getElementById("nov").innerHTML=NOV.map(n=>[n,Math.round((new Date(n[1]+"T00:00")-t)/864e5)]).filter(x=>x[1]>-9).slice(0,4).map(([n,dd])=>`<div class="nov"><div>${n[0]}<div class="muted">${fmt(new Date(n[1]+"T00:00"),{month:"short",day:"numeric"})} · ${n[2]}</div></div><div class="cd">${dd>1?"Starts in "+dd+" days":dd==1?"Starts tomorrow":dd==0?"Starts today":"Day "+(1-dd)+" of 9"}</div></div>`).join("");
+}
+sel.onchange=render;
+document.getElementById("zip").oninput=e=>{const z=ZIP[e.target.value.slice(0,2)];if(e.target.value.length>=5&&z){sel.value=z;render()}};
+document.getElementById("geo").onclick=()=>{navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{/* mockup: crude lon-based guess; production = reverse-geocode to diocese */const lon=p.coords.longitude;sel.value=lon>-76?"NJ":lon>-90?"IL":lon>-105?"TX":"CA";render()},()=>alert("Location blocked, pick your state or ZIP.")):alert("Not supported")};
+document.getElementById("share").onclick=()=>{const d={title:"This week where you live · Lumen Wonder",text:"Holy days, novenas & feasts for my diocese this week",url:location.href};navigator.share?navigator.share(d):(navigator.clipboard.writeText(d.url),alert("Link copied"))};
+render();
+</script>
+</body>
+</html>
