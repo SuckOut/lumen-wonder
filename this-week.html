@@ -52,6 +52,7 @@
 .tw .side>.card{margin-bottom:16px}
 .tw{background:transparent}
 .tw .tw-hero h1,.tw .tw-hero p{color:#fff8ea !important}
+.showing{background:#fff7dc;border:2px solid #d9c27a;border-radius:10px;padding:12px 16px;margin:0 0 12px;font-size:1.05rem}.showing.none{background:#f3f3f3;border-color:#bbb}.showing .err{color:#b23a3a;display:block;font-size:.9rem;margin-top:4px}
 </style>
 </head>
 <body data-page="this-week">
@@ -60,6 +61,7 @@
 
 <section class="tw-hero"><div class="brand">Lumen Wonder</div><h1>This Week Where You Live</h1><p id="range"></p></section>
 <div class="wrap">
+ <div class="showing" id="showing" role="status" aria-live="polite"></div>
  <div class="loc">📍 <select id="state"></select><input id="zip" placeholder="ZIP" size="6" inputmode="numeric"><button id="geo">Use my location</button>
  <div class="where" id="where"></div></div>
  <div class="grid">
@@ -85,8 +87,18 @@
   <script>
 // Provinces that KEEP Ascension on Thursday (all other US provinces transfer to Sunday)
 const THU_ASC=["Boston","Hartford","New York","Newark","Philadelphia","Omaha"];
-const ST={NJ:["Newark","Archdiocese of Newark (Province of Newark)"],NY:["New York","Archdiocese of New York (Province of New York)"],PA:["Philadelphia","Archdiocese of Philadelphia"],MA:["Boston","Archdiocese of Boston"],CT:["Hartford","Archdiocese of Hartford"],NE:["Omaha","Archdiocese of Omaha"],CA:["Los Angeles","Archdiocese of Los Angeles"],TX:["San Antonio","Archdiocese of San Antonio / Galveston-Houston"],FL:["Miami","Archdiocese of Miami"],IL:["Chicago","Archdiocese of Chicago"],HI:["San Francisco","Diocese of Honolulu (Province of San Francisco)"],OH:["Cincinnati","Archdiocese of Cincinnati"],WA:["Seattle","Archdiocese of Seattle"]};
-const ZIP={"07":"NJ","08":"NJ","10":"NY","11":"NY","19":"PA","02":"MA","06":"CT","68":"NE","90":"CA","77":"TX","33":"FL","60":"IL","96":"HI","45":"OH","98":"WA"};
+// state -> [province, name]. Province = metropolitan see of the state's main ecclesiastical province.
+const SN={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
+const PV={AL:"Mobile",AK:"Anchorage-Juneau",AZ:"Santa Fe",AR:"Oklahoma City",CA:"Los Angeles / San Francisco",CO:"Denver",CT:"Hartford",DE:"Baltimore",DC:"Washington",FL:"Miami",GA:"Atlanta",HI:"San Francisco",ID:"Portland in Oregon",IL:"Chicago",IN:"Indianapolis",IA:"Dubuque",KS:"Kansas City in Kansas",KY:"Louisville",LA:"New Orleans",ME:"Boston",MD:"Baltimore",MA:"Boston",MI:"Detroit",MN:"St. Paul and Minneapolis",MS:"Mobile",MO:"St. Louis",MT:"Portland in Oregon",NE:"Omaha",NV:"San Francisco",NH:"Boston",NJ:"Newark",NM:"Santa Fe",NY:"New York",NC:"Atlanta",ND:"St. Paul and Minneapolis",OH:"Cincinnati",OK:"Oklahoma City",OR:"Portland in Oregon",PA:"Philadelphia",RI:"Hartford",SC:"Atlanta",SD:"St. Paul and Minneapolis",TN:"Louisville",TX:"San Antonio / Galveston-Houston",UT:"San Francisco",VT:"Boston",VA:"Baltimore",WA:"Seattle",WV:"Baltimore",WI:"Milwaukee",WY:"Denver"};
+// 3-digit ZIP prefix ranges -> state
+const ZR=[[5,5,"NY"],[10,27,"MA"],[28,29,"RI"],[30,38,"NH"],[39,49,"ME"],[50,54,"VT"],[55,55,"MA"],[56,59,"VT"],[60,69,"CT"],[70,89,"NJ"],[100,149,"NY"],[150,196,"PA"],[197,199,"DE"],[200,200,"DC"],[201,201,"VA"],[202,205,"DC"],[206,219,"MD"],[220,246,"VA"],[247,268,"WV"],[270,289,"NC"],[290,299,"SC"],[300,319,"GA"],[320,349,"FL"],[350,369,"AL"],[370,385,"TN"],[386,397,"MS"],[398,399,"GA"],[400,427,"KY"],[430,459,"OH"],[460,479,"IN"],[480,499,"MI"],[500,528,"IA"],[530,549,"WI"],[550,567,"MN"],[569,569,"DC"],[570,577,"SD"],[580,588,"ND"],[590,599,"MT"],[600,629,"IL"],[630,658,"MO"],[660,679,"KS"],[680,693,"NE"],[700,714,"LA"],[716,729,"AR"],[730,732,"OK"],[733,733,"TX"],[734,749,"OK"],[750,799,"TX"],[800,816,"CO"],[820,831,"WY"],[832,838,"ID"],[840,847,"UT"],[850,865,"AZ"],[870,884,"NM"],[885,885,"TX"],[889,898,"NV"],[900,961,"CA"],[967,968,"HI"],[970,979,"OR"],[980,994,"WA"],[995,999,"AK"]];
+// NJ dioceses by county
+const NJC={Essex:"Newark",Hudson:"Newark",Union:"Newark",Bergen:"Newark",Passaic:"Paterson",Morris:"Paterson",Sussex:"Paterson",Middlesex:"Metuchen",Somerset:"Metuchen",Hunterdon:"Metuchen",Warren:"Metuchen",Mercer:"Trenton",Monmouth:"Trenton",Ocean:"Trenton",Burlington:"Trenton",Camden:"Camden",Gloucester:"Camden",Salem:"Camden",Cumberland:"Camden",Atlantic:"Camden","Cape May":"Camden"};
+const NJZ={70:"Newark",71:"Newark",72:"Newark",73:"Newark",74:"Paterson",75:"Paterson",76:"Newark",77:"Trenton",78:"Paterson",79:"Paterson",80:"Camden",81:"Camden",82:"Camden",83:"Camden",84:"Camden",85:"Trenton",86:"Trenton",87:"Trenton",88:"Metuchen",89:"Metuchen"};
+const BURL=["08010","08011","08015","08016","08019","08022","08036","08041","08042","08046","08048","08052","08053","08054","08055","08057","08060","08064","08065","08068","08073","08075","08077","08088","08505","08511","08515","08518","08554","08562"];
+const zipState=z=>{const p=+z.slice(0,3);const r=ZR.find(r=>p>=r[0]&&p<=r[1]);return r&&r[2]};
+const zipDio=z=>BURL.includes(z)?"Trenton":NJZ[+z.slice(0,3)];
+const dioLabel=(st,dio)=>dio?(dio=="Newark"?"Archdiocese of Newark":"Diocese of "+dio)+", "+st:"Province of "+PV[st]+" ("+SN[st]+")";
 // color: w white, r red, g green, v violet
 const F={"2026-10-11":["28th Sunday in Ordinary Time","g"],"2026-10-13":["Tuesday, 28th Week in Ordinary Time","g"],"2026-10-12":["Monday, 28th Week in Ordinary Time","g"],"2026-10-14":["St. Callistus I, Pope & Martyr (opt.)","r"],"2026-10-15":["St. Teresa of Jesus (Ávila), Doctor","w"],"2026-10-16":["St. Hedwig / St. Margaret Mary Alacoque (opt.)","w"],"2026-10-17":["St. Ignatius of Antioch, Bishop & Martyr","r"],"2026-10-18":["29th Sunday in Ordinary Time","g"],"2026-10-19":["Sts. John de Brébeuf, Isaac Jogues & Companions","r"],"2026-10-20":["St. Paul of the Cross (opt.)","w"],"2026-10-22":["St. John Paul II (opt.)","w"],"2026-10-23":["St. John of Capistrano (opt.)","w"],"2026-10-24":["St. Anthony Mary Claret (opt.)","w"],"2026-10-25":["30th Sunday in Ordinary Time","g"],"2026-10-28":["Sts. Simon & Jude, Apostles","r"],"2026-11-01":["ALL SAINTS (Solemnity, on Sunday)","w"],"2026-11-02":["All Souls (Commemoration of All the Faithful Departed)","v"],"2026-11-03":["St. Martin de Porres (opt.)","w"],"2026-11-04":["St. Charles Borromeo","w"],"2026-11-08":["32nd Sunday in Ordinary Time","g"],"2026-11-09":["Dedication of the Lateran Basilica","w"],"2026-11-10":["St. Leo the Great","w"],"2026-11-11":["St. Martin of Tours","w"],"2026-11-12":["St. Josaphat","r"],"2026-11-13":["St. Frances Xavier Cabrini","w"],"2026-11-15":["33rd Sunday in Ordinary Time","g"],"2026-11-17":["St. Elizabeth of Hungary","w"],"2026-11-21":["Presentation of the Blessed Virgin Mary","w"],"2026-11-22":["OUR LORD JESUS CHRIST, KING OF THE UNIVERSE","w"],"2026-11-26":["Thanksgiving Day (US, Mass for Thanksgiving)","w"],"2026-11-29":["1st Sunday of Advent","v"],"2026-11-30":["St. Andrew, Apostle","r"],"2026-12-03":["St. Francis Xavier","w"],"2026-12-06":["2nd Sunday of Advent","v"],"2026-12-07":["St. Ambrose","w"],"2026-12-08":["IMMACULATE CONCEPTION (Patronal feast of the USA)","w"],"2026-12-09":["St. Juan Diego (opt.)","w"],"2026-12-12":["Our Lady of Guadalupe (Feast)","w"],"2026-12-13":["3rd Sunday of Advent (Gaudete)","v"],"2026-12-14":["St. John of the Cross","w"],"2026-12-20":["4th Sunday of Advent","v"],"2026-12-25":["THE NATIVITY OF THE LORD (Christmas)","w"],"2026-12-26":["St. Stephen, First Martyr","r"],"2026-12-27":["The Holy Family","w"],"2026-12-28":["Holy Innocents","r"],"2027-01-01":["MARY, HOLY MOTHER OF GOD","w"],"2027-01-03":["The Epiphany of the Lord (US: Sunday)","w"]};
 const HDO={"2026-11-01":"All Saints falls on Sunday this year, so the obligation is met by Sunday Mass.","2026-12-08":"Immaculate Conception (Tue): obligation applies everywhere in the US.","2026-12-25":"Christmas (Fri): obligation.","2027-01-01":"Mary, Mother of God (Fri): obligation."};
@@ -96,12 +108,18 @@ const C={w:"#d9c27a",r:"#b23a3a",g:"#4b7d57",v:"#6b4a8f"};
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const fmt=(d,o)=>d.toLocaleDateString("en-US",o);
 const sel=document.getElementById("state");
-Object.keys(ST).sort().forEach(k=>sel.add(new Option(k+" · "+ST[k][1],k)));
-sel.value=localStorage.lwState||"NJ";
-function render(){
- const s=sel.value,[prov,dio]=ST[s];localStorage.lwState=s;
- const asc=THU_ASC.includes(prov)?"Ascension is kept on <b>Thursday, May 6, 2027</b> (holy day of obligation) in your province.":"Ascension moves to <b>Sunday, May 9, 2027</b> in your province.";
- document.getElementById("where").innerHTML="Showing <b>"+dio+"</b>. "+asc;
+sel.add(new Option("Choose your state…",""));
+Object.keys(SN).sort((a,b)=>SN[a].localeCompare(SN[b])).forEach(k=>sel.add(new Option(SN[k],k)));
+let LOC=null;try{LOC=JSON.parse(localStorage.lwLoc||"null")}catch(e){}
+function setLoc(l,err){LOC=l;if(l)localStorage.lwLoc=JSON.stringify(l);render(err)}
+function render(err){
+ const sh=document.getElementById("showing");
+ if(LOC&&SN[LOC.st]){sel.value=LOC.st;const how=LOC.src=="zip"?"from ZIP "+LOC.zip+(LOC.dio?", approx.":""):LOC.src=="geo"?"from your location"+(LOC.county?", "+LOC.county:""):"chosen: "+SN[LOC.st];
+  sh.className="showing";sh.innerHTML="📍 Showing the calendar for: <b>"+dioLabel(LOC.st,LOC.dio)+"</b> <span class=muted>("+how+")</span>"+(err?"<span class=err>"+err+"</span>":"")}
+ else{sel.value="";sh.className="showing none";sh.innerHTML="📍 <b>No location chosen yet</b> — showing general US calendar. Pick a state, enter a ZIP, or use your location."+(err?"<span class=err>"+err+"</span>":"")}
+ const s=LOC&&SN[LOC.st]?LOC.st:null,prov=s?PV[s]:null;
+ const asc=!s?"Ascension: kept Thursday, May 6, 2027 in the Boston, Hartford, New York, Newark, Philadelphia and Omaha provinces; moved to Sunday, May 9 elsewhere.":THU_ASC.includes(prov)?"Ascension is kept on <b>Thursday, May 6, 2027</b> (holy day of obligation) in the Province of "+prov+".":"Ascension moves to <b>Sunday, May 9, 2027</b> in the Province of "+prov+".";
+ document.getElementById("where").innerHTML=asc;
  const t=new Date();t.setHours(0,0,0,0);const st=new Date(t);st.setDate(t.getDate()-t.getDay());
  const en=new Date(st);en.setDate(st.getDate()+6);
  document.getElementById("range").textContent=fmt(st,{month:"long",day:"numeric"})+" – "+fmt(en,{month:"long",day:"numeric",year:"numeric"});
@@ -121,9 +139,16 @@ function render(){
  document.getElementById("hdo").innerHTML=(hdoWeek.length?'<div class="hdo-big">✅ Yes, this week</div><p>'+hdoWeek.map(x=>x[1]).join("<br>")+"</p>":'<div class="hdo-big">No, not this week</div>')+`<p class="muted">Next: <b>${fmt(nd,{weekday:"long",month:"short",day:"numeric"})}</b>, in ${days} days. ${HDO[nx]}</p><p class="muted">US rule: when Jan 1, Aug 15 or Nov 1 falls on a Saturday or Monday, the obligation is lifted. Next fast days: Ash Wednesday Feb 10, 2027 and Good Friday Mar 26, 2027.</p>`;
  document.getElementById("nov").innerHTML=NOV.map(n=>[n,Math.round((new Date(n[1]+"T00:00")-t)/864e5)]).filter(x=>x[1]>-9).slice(0,4).map(([n,dd])=>`<div class="nov"><div>${n[0]}<div class="muted">${fmt(new Date(n[1]+"T00:00"),{month:"short",day:"numeric"})} · ${n[2]}</div></div><div class="cd">${dd>1?"Starts in "+dd+" days":dd==1?"Starts tomorrow":dd==0?"Starts today":"Day "+(1-dd)+" of 9"}</div></div>`).join("");
 }
-sel.onchange=render;
-document.getElementById("zip").oninput=e=>{const z=ZIP[e.target.value.slice(0,2)];if(e.target.value.length>=5&&z){sel.value=z;render()}};
-document.getElementById("geo").onclick=()=>{navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{/* mockup: crude lon-based guess; production = reverse-geocode to diocese */const lon=p.coords.longitude;sel.value=lon>-76?"NJ":lon>-90?"IL":lon>-105?"TX":"CA";render()},()=>alert("Location blocked, pick your state or ZIP.")):alert("Not supported")};
+sel.onchange=()=>sel.value?setLoc({st:sel.value,src:"pick"}):(localStorage.removeItem("lwLoc"),setLoc(null));
+document.getElementById("zip").oninput=e=>{const z=e.target.value.replace(/\D/g,"");if(z.length<5)return;const st=zipState(z);
+ if(!st)return render("ZIP "+z+" isn't a US state ZIP we recognize. Try again or pick your state.");setLoc({st,src:"zip",zip:z.slice(0,5),dio:st=="NJ"?zipDio(z):null})};
+document.getElementById("geo").onclick=()=>{if(!navigator.geolocation)return render("Your browser doesn't support location. Pick your state or ZIP.");
+ const b=document.getElementById("geo");b.textContent="Locating…";
+ navigator.geolocation.getCurrentPosition(async p=>{try{const r=await fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="+p.coords.latitude+"&longitude="+p.coords.longitude+"&localityLanguage=en");const j=await r.json();
+  const st=(j.principalSubdivisionCode||"").replace("US-","");if(j.countryCode!="US"||!SN[st])throw "We could only place you outside the US. Pick your state or ZIP.";
+  const adm=((j.localityInfo||{}).administrative||[]).map(a=>a.name).find(n=>/County$/.test(n));const cn=adm?adm.replace(/ County$/,""):null;
+  setLoc({st,src:"geo",county:adm||null,dio:st=="NJ"&&cn?NJC[cn]||null:null})}catch(e){render(typeof e=="string"?e:"Couldn't look up your location. Pick your state or ZIP.")}b.textContent="Use my location"},
+ e=>{b.textContent="Use my location";render(e.code==1?"Location permission was denied. Pick your state or enter your ZIP instead.":"Couldn't get your location. Pick your state or ZIP.")},{timeout:10000})};
 document.getElementById("share").onclick=()=>{const d={title:"This week where you live · Lumen Wonder",text:"Holy days, novenas & feasts for my diocese this week",url:location.href};navigator.share?navigator.share(d):(navigator.clipboard.writeText(d.url),alert("Link copied"))};
 render();
 </script>
