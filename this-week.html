@@ -54,6 +54,7 @@
 .tw .tw-hero h1,.tw .tw-hero p{color:#fff8ea !important}
 .showing{background:#fff7dc;border:2px solid #d9c27a;border-radius:10px;padding:12px 16px;margin:0 0 12px;font-size:1.05rem}.showing.none{background:#f3f3f3;border-color:#bbb}.showing .err{color:#b23a3a;display:block;font-size:.9rem;margin-top:4px}
 </style>
+<style>.par{border-top:1px solid #eee;padding:8px 0}.par b{display:block}.par .muted{font-size:.85em}.par ul{margin:4px 0 0 18px;padding:0;font-size:.9em}.par .ev{background:#fff7e0;border-radius:6px;padding:4px 8px;margin-top:4px;font-size:.88em}</style>
 </head>
 <body data-page="this-week">
   <div data-site-header></div>
@@ -67,7 +68,9 @@
  <div class="grid">
   <div class="card"><h2>Your Catholic week</h2><div id="week"></div>
    <p class="muted">Colors = liturgical color. <span class="tag t-unc">check</span> = mockup data to verify against the USCCB Ordo before launch.</p></div>
-  <div class="side">
+ <div class="card" id="parishCard"><h2>Parishes near you ⛪</h2><div id="parishes"></div>
+  <p class="muted">⚠️ Times may change — confirm with the parish before you go.</p></div>
+ <div class="side">
    <div class="card"><h2>Holy day of obligation?</h2><div id="hdo"></div></div>
    <div class="card"><h2>Novenas starting soon</h2><div id="nov"></div></div>
    <div class="card"><h2>Share this week</h2><p class="muted">Send your parish group the week at a glance.</p><button class="share" id="share">Share ↗</button></div>
@@ -137,6 +140,7 @@ function render(err){
  const nx=Object.keys(HDO).find(k=>new Date(k+"T00:00")>=t);
  const nd=new Date(nx+"T00:00"),days=Math.round((nd-t)/864e5);
  document.getElementById("hdo").innerHTML=(hdoWeek.length?'<div class="hdo-big">✅ Yes, this week</div><p>'+hdoWeek.map(x=>x[1]).join("<br>")+"</p>":'<div class="hdo-big">No, not this week</div>')+`<p class="muted">Next: <b>${fmt(nd,{weekday:"long",month:"short",day:"numeric"})}</b>, in ${days} days. ${HDO[nx]}</p><p class="muted">US rule: when Jan 1, Aug 15 or Nov 1 falls on a Saturday or Monday, the obligation is lifted. Next fast days: Ash Wednesday Feb 10, 2027 and Good Friday Mar 26, 2027.</p>`;
+typeof renderPar=="function"&&renderPar();
  document.getElementById("nov").innerHTML=NOV.map(n=>[n,Math.round((new Date(n[1]+"T00:00")-t)/864e5)]).filter(x=>x[1]>-9).slice(0,4).map(([n,dd])=>`<div class="nov"><div>${n[0]}<div class="muted">${fmt(new Date(n[1]+"T00:00"),{month:"short",day:"numeric"})} · ${n[2]}</div></div><div class="cd">${dd>1?"Starts in "+dd+" days":dd==1?"Starts tomorrow":dd==0?"Starts today":"Day "+(1-dd)+" of 9"}</div></div>`).join("");
 }
 sel.onchange=()=>sel.value?setLoc({st:sel.value,src:"pick"}):(localStorage.removeItem("lwLoc"),setLoc(null));
@@ -147,9 +151,22 @@ document.getElementById("geo").onclick=()=>{if(!navigator.geolocation)return ren
  navigator.geolocation.getCurrentPosition(async p=>{try{const r=await fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="+p.coords.latitude+"&longitude="+p.coords.longitude+"&localityLanguage=en");const j=await r.json();
   const st=(j.principalSubdivisionCode||"").replace("US-","");if(j.countryCode!="US"||!SN[st])throw "We could only place you outside the US. Pick your state or ZIP.";
   const adm=((j.localityInfo||{}).administrative||[]).map(a=>a.name).find(n=>/County$/.test(n));const cn=adm?adm.replace(/ County$/,""):null;
-  setLoc({st,src:"geo",county:adm||null,dio:st=="NJ"&&cn?NJC[cn]||null:null})}catch(e){render(typeof e=="string"?e:"Couldn't look up your location. Pick your state or ZIP.")}b.textContent="Use my location"},
+  setLoc({st,src:"geo",county:adm||null,lat:p.coords.latitude,lng:p.coords.longitude,dio:st=="NJ"&&cn?NJC[cn]||null:null})}catch(e){render(typeof e=="string"?e:"Couldn't look up your location. Pick your state or ZIP.")}b.textContent="Use my location"},
  e=>{b.textContent="Use my location";render(e.code==1?"Location permission was denied. Pick your state or enter your ZIP instead.":"Couldn't get your location. Pick your state or ZIP.")},{timeout:10000})};
 document.getElementById("share").onclick=()=>{const d={title:"This week where you live · Lumen Wonder",text:"Holy days, novenas & feasts for my diocese this week",url:location.href};navigator.share?navigator.share(d):(navigator.clipboard.writeText(d.url),alert("Link copied"))};
+let PAR=null;fetch("data/parishes.json").then(r=>r.json()).then(j=>{PAR=j;renderPar()}).catch(()=>{});
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+function renderPar(){const el=document.getElementById("parishes");if(!el)return;
+ const z=LOC&&LOC.zip,near=LOC&&LOC.st=="NJ"&&((z&&(z.startsWith("080")||BURL.includes(z)))||(LOC.county&&/Burlington/.test(LOC.county))||(LOC.lat&&Math.abs(LOC.lat-40.03)<0.25&&Math.abs(LOC.lng+74.87)<0.3));
+ if(!near||!PAR){el.innerHTML='<p>Parish listings coming soon for your area.</p><p class="muted">Meanwhile, find Mass and Confession times on <a href="https://masstimes.org/" target="_blank" rel="noopener">MassTimes.org ↗</a>.</p>';return}
+ const c=LOC.lat?[LOC.lat,LOC.lng]:(PAR.zip_centroids[z]||PAR.zip_centroids["08016"]);
+ const dist=p=>{const dy=(p.lat-c[0])*69,dx=(p.lng-c[1])*69*Math.cos(c[0]*Math.PI/180);return Math.sqrt(dx*dx+dy*dy)};
+ const list=PAR.parishes.map(p=>[p,dist(p)]).sort((a,b)=>a[1]-b[1]);
+ el.innerHTML='<p class="muted">'+list.length+' parishes near '+(z?"ZIP "+z:"you")+', closest first · last checked '+fmt(new Date(PAR.last_checked+"T00:00"),{month:"short",day:"numeric",year:"numeric"})+'</p>'+list.map(([p,d])=>{
+  const times=p.mass_times.length?'<ul>'+p.mass_times.map(t=>"<li>Mass: "+esc(t)+"</li>").join("")+p.confession.map(t=>"<li>Confession: "+esc(t)+"</li>").join("")+'</ul>':'<div class="muted">'+(p.website?'Times: see <a href="'+esc(p.website)+'" target="_blank" rel="noopener">parish website ↗</a>':"No website found")+'</div>';
+  const links=[p.website&&p.mass_times.length?'<a href="'+esc(p.website)+'" target="_blank" rel="noopener">Website ↗</a>':"",p.bulletin?'<a href="'+esc(p.bulletin)+'" target="_blank" rel="noopener">Bulletin (PDF) ↗</a>':""].filter(Boolean).join(" · ");
+  const ev=(p.events||[]).filter(e=>new Date(e.date+"T23:59")>=new Date()).map(e=>'<div class="ev">📅 '+fmt(new Date(e.date+"T00:00"),{weekday:"short",month:"short",day:"numeric"})+": "+esc(e.title)+' <a href="'+esc(e.source)+'" target="_blank" rel="noopener">source ↗</a></div>').join("");
+  return '<div class="par"><b>'+esc(p.name)+'</b><span class="muted">'+esc(p.address)+" · ~"+d.toFixed(1)+" mi</span>"+times+(links?'<div class="muted">'+links+"</div>":"")+ev+"</div>"}).join("")}
 render();
 </script>
 </body>
